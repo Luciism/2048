@@ -1,0 +1,191 @@
+body {
+    background-color: #222222;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  #game-grid {
+    position: relative;
+    display: grid;
+    border-radius: 4px;
+    /* width: 500px;
+    height: 500px; */
+    /* grid-column: 1fr; */
+    grid-template-columns: 100px 100px 100px 100px;
+    grid-template-rows: 100px 100px 100px 100px;
+    gap: 14px;
+    outline: 14px solid #444444;
+    background-color: #444444;
+  }
+  
+  #game-tiles {
+    position: absolute;
+    inset: 0;
+  }
+@keyframes popAnimation {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.07);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+.pop-animated-element {
+  animation: 0.5s popAnimation ease-in-out;
+}
+
+  @keyframes fadeInOpacity {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+  .game-tile {
+    position: absolute;
+    transition: left 0.15s ease-in-out, top 0.2s ease-in-out;
+    animation: 0.5s fadeInOpacity ease-out;
+    border-radius: 4px;
+    width: 100px;
+    height: 100px;
+    color: white;
+    background-color: black;
+    padding: 0;
+    margin: 0;
+    font-size: 50px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+      Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  
+    &[position="1"] {
+      top: 0px;
+      left: 0px;
+    }
+  
+    &[position="2"] {
+      top: 0px;
+      left: 114px;
+    }
+  
+    &[position="3"] {
+      top: 0px;
+      left: 228px;
+    }
+  
+    &[position="4"] {
+      top: 0px;
+      left: 342px;
+    }
+  
+    &[position="5"] {
+      top: 114px;
+      left: 0px;
+    }
+  
+    &[position="6"] {
+      top: 114px;
+      left: 114px;
+    }
+  
+    &[position="7"] {
+      top: 114px;
+      left: 228px;
+    }
+  
+    &[position="8"] {
+      top: 114px;
+      left: 342px;
+    }
+  
+    &[position="9"] {
+      top: 228px;
+      left: 0px;
+    }
+  
+    &[position="10"] {
+      top: 228px;
+      left: 114px;
+    }
+  
+    &[position="11"] {
+      top: 228px;
+      left: 228px;
+    }
+  
+    &[position="12"] {
+      top: 228px;
+      left: 342px;
+    }
+  
+    &[position="13"] {
+      top: 342px;
+      left: 0px;
+    }
+  
+    &[position="14"] {
+      top: 342px;
+      left: 114px;
+    }
+  
+    &[position="15"] {
+      top: 342px;
+      left: 228px;
+    }
+  
+    &[position="16"] {
+      top: 342px;
+      left: 342px;
+    }
+  
+    &[num="2"] {
+      background-color: #4285f4;
+    }
+    &[num="4"] {
+      background-color: #ea4335;
+    }
+    &[num="8"] {
+      background-color: #fbbc05;
+    }
+    &[num="16"] {
+      background-color: #34a853;
+    }
+    &[num="32"] {
+      background-color: #e84e9b;
+    }
+    &[num="64"] {
+      background-color: #27a28b;
+    }
+    &[num="128"] {
+      background-color: #f67c5f;
+    }
+    &[num="256"] {
+      background-color: #2b5bad;
+    }
+    &[num="512"] {
+      background-color: #edc850;
+    }
+    &[num="1024"] {
+      background-color: #b79473;
+    }
+    &[num="2048"] {
+      background-color: #976f43;
+    }
+  }
+
+  .game-piece-cell {
+    border-radius: 4px;
+    background-color: #666666;
+  }
+  
