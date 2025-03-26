@@ -28,7 +28,8 @@ class GameGrid {
 const gameTilesElement = document.getElementById("game-tiles");
 
 class TileManager {
-  constructor() {
+  constructor(scoreManager) {
+    this.scoreManager = scoreManager;
     this.clearBoard();
   }
 
@@ -59,7 +60,6 @@ class TileManager {
     const tileNumber = randomArrayElement(tileOptions);
     const position = this.randomUnoccupiedPosition();
     if (position > 0 && position <= 16) {
-      console.log(`adding tile at position ${position}`);
       return this.addTile(tileNumber, position);
     }
     return null;  // No available positions
@@ -79,6 +79,8 @@ class TileManager {
     animateElementPop(tile2);
     this.tileGrid[tile1Position - 1] = tile2;
     this.tileGrid[tile2Position - 1] = null;
+
+    this.scoreManager.addScore(newNum);
   }
 
 
@@ -86,12 +88,12 @@ class TileManager {
     const tileElement = this.tileGrid[tilePosition - 1];
 
     if (!tileElement) {
-      console.log("No tile element");
+      // console.log("No tile element");
       return;
     }
 
     if (1 > tilePosition + shift > 16) {
-      console.log("Tile position out of range");
+      // console.log("Tile position out of range");
       return;
     }
 
@@ -115,7 +117,6 @@ class TileManager {
         this.mergeTiles(nextTile, tileElement);
       } else {
         // Shift tile to max pos
-        console.log(`Shifting tile ${tilePosition} to ${nextTilePosition - shift}`);
         position = nextTilePosition - shift;
       }
     } else {
@@ -168,24 +169,61 @@ class TileManager {
     const gridAfter = this.flatTileGrid();
     if (JSON.stringify(gridBefore) !== JSON.stringify(gridAfter)) {
       this.addRandomTile();
+
+      if (this.outOfMoves()) {
+        this.gameOver();
+      }
     }
   }
-  shiftUp() {
-    const gridBefore = this.flatTileGrid(); 
-    for (let i = 0; i < this.tileGrid.length; i++) {
-      this.shiftTileUp(i + 1);
+
+  gameOver() {
+    setTimeout(() => {
+      document.querySelector(".game-over-overlay").classList.toggle("active");
+    }, 1500);
+  }
+
+  outOfMoves() {
+    // Check if game grid is full
+    if (this.tileGrid.filter(tile => tile !== null).length < 16) {
+      return false;
     }
 
-    const gridAfter = this.flatTileGrid();
-    if (JSON.stringify(gridBefore) !== JSON.stringify(gridAfter)) {
-      this.addRandomTile();
+    // Check for two consecutive tiles (horizontally)
+    for (let i = 0; i < this.tileGrid.length; i++) {
+      const tile = this.tileGrid[i];
+      const nextTile = this.tileGrid[i+1];
+
+      if (tile && nextTile) {
+        const tile1Num = parseInt(tile.getAttribute("num"));
+        const tile2Num = parseInt(nextTile.getAttribute("num"));
+        const tile1Pos = parseInt(tile.getAttribute("position"));
+        const tile2Pos = parseInt(nextTile.getAttribute("position"));
+
+        if (tile1Num === tile2Num) {
+          // Ensure same row
+          if (Math.floor((tile1Pos - 1) / 4) === Math.floor((tile2Pos - 1) / 4)) {
+            return false;
+          }
+        }
+      }
     }
+
+    // Check for two consecutive tiles (vertically)
+    for (let i = 0; i < this.tileGrid.length - 4; i++) {
+      const tile = this.tileGrid[i];
+      const nextTile = this.tileGrid[i + 4];
+
+      if (tile && nextTile) {
+        if (tile.getAttribute("num") === nextTile.getAttribute("num")) {
+          return false;
+        }
+      }
+    }
+    return true;
   }
 
   clearBoard() {
-    gameTilesElement.childNodes.forEach((child) => {
-      gameTilesElement.removeChild(child);
-    });
+    gameTilesElement.innerHTML = '';
 
     this.tileGrid = [
       null,
@@ -217,36 +255,103 @@ class TileManager {
   }
 }
 
+class ScoreManager {
+  constructor() {
+    this.currentScore = 0;
+    this.bestScore = parseInt(localStorage.getItem("bestScore") || 0)
+
+    this.currentScoreElement = document.querySelector(".current-score .value");
+    this.bestScoreElement = document.querySelector(".best-score .value");
+    this.gameOverOverlayScoreElement = document.querySelector(".game-over-overlay .score .value");
+  }
+
+  initBestScore() {
+    this.bestScoreElement.innerText = this.bestScore;
+  }
+
+  updateScore(score) {
+    this.currentScore = score;
+    this.currentScoreElement.innerText = score;
+    this.gameOverOverlayScoreElement.innerText = score;
+
+    if (score > this.bestScore) {
+      this.bestScore = score;
+      this.bestScoreElement.innerText = score;
+
+      localStorage.setItem("bestScore", score)
+    }
+  }
+
+  refresh() {
+    this.updateScore(this.currentScore)
+  }
+
+  addScore(value) {
+    this.updateScore(this.currentScore + value);
+  }
+}
+
+new ScoreManager().initBestScore();
+
 class GameManager {
   constructor() {
     this.gameGrid = new GameGrid();
-    this.tileManager = new TileManager();
+    this.scoreManager = new ScoreManager();
+    this.tileManager = new TileManager(this.scoreManager);
+
+    this.eventsAreSetup = false;
 
     this.onKeypress = (e) => {
       if (e.key == "ArrowUp") {
-        console.log("up");
         this.tileManager.shift(pos => this.tileManager.shiftTileUp(pos));
+        e.preventDefault();
         return;
       }
       if (e.key == "ArrowLeft") {
         this.tileManager.shift(pos => this.tileManager.shiftTileLeft(pos));
+        e.preventDefault();
         return;
       }
       if (e.key == "ArrowDown") {
         this.tileManager.shift(pos => this.tileManager.shiftTileDown(pos), true);
+        e.preventDefault();
         return;
       }
       if (e.key == "ArrowRight") {
         this.tileManager.shift(pos => this.tileManager.shiftTileRight(pos), true);
+        e.preventDefault();
         return;
       }
     };
+
+    this.resetControls = Array.from(document.querySelectorAll("[control='reset'"));
+    this.onResetControlClick = () => this.resetGame();
+  }
+
+  setupEvents() {
+    if (this.eventsAreSetup) {
+      return;
+    }
+    this.eventsAreSetup = true;
+
+    window.addEventListener("keydown", this.onKeypress);
+
+    this.resetControls.forEach(control => {
+      control.addEventListener("click", this.onResetControlClick);
+    });
   }
 
   createGame() {
+    this.tileManager.clearBoard();
     this.tileManager.addRandomTile([2, 4]);
     this.tileManager.addRandomTile([2, 4]);
-    window.addEventListener("keydown", this.onKeypress);
+    this.setupEvents();
+  }
+
+  resetGame() {
+    this.scoreManager.updateScore(0);
+    this.createGame();
+    document.querySelector(".game-over-overlay").classList.remove("active");
   }
 }
 
