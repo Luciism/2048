@@ -189,6 +189,14 @@ class TileManager {
 
       if (this.outOfMoves()) {
         this.gameOver();
+        localStorage.removeItem("gameState");
+      } else {
+        // Save game state to local storage
+        const gameState = JSON.stringify({
+          score: this.scoreManager.currentScore,
+          tileGrid: this.flatTileGrid() 
+        });
+        localStorage.setItem("gameState", gameState);
       }
     }
   }
@@ -398,9 +406,38 @@ class GameManager {
       gameWonOverlayElement.classList.add("active");
     }
   }
+
+  loadGame(gameState) {
+    const score = gameState.score;
+    const tileGrid = gameState.tileGrid;
+    
+    this.scoreManager.updateScore(score);
+    this.tileManager.clearBoard();
+
+    for (let i = 0; i < tileGrid.length; i++) {
+      if (tileGrid[i] !== null) {
+        this.tileManager.addTile(tileGrid[i], i + 1);
+      }
+    }
+
+    this.setupEvents();
+  }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
   const gameManager = new GameManager();
+
+  let gameState = localStorage.getItem("gameState");
+
+  if (gameState) {
+    try {
+      gameState = JSON.parse(gameState);
+      gameManager.loadGame(gameState);
+      return;
+    } catch {
+      localStorage.removeItem("gameState");
+    }
+  }
+
   gameManager.createGame();
 });
