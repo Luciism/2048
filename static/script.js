@@ -1,9 +1,17 @@
+const WINNING_TILE = 2048;
+
+const popSoundEffect = new Audio("../static/media/ui-pop-sound.mp3");
+const gameOverSoundEffect = new Audio("../static/media/game-over-sound.mp3");
+const gameWonSoundEffect = new Audio("../static/media/game-won-sound.mp3");
+
 function animateElementPop(element) {
   element.classList.remove("pop-animated-element");
   void element.offsetWidth;
   element.classList.add("pop-animated-element");
 }
 
+const gameOverOverlayElement = document.querySelector(".game-over-overlay");
+const gameWonOverlayElement = document.querySelector(".game-won-overlay");
 
 const randomArrayElement = (array) => {
   return array[Math.floor(Math.random() * array.length)];
@@ -28,8 +36,9 @@ class GameGrid {
 const gameTilesElement = document.getElementById("game-tiles");
 
 class TileManager {
-  constructor(scoreManager) {
+  constructor(scoreManager, gameFinishHook) {
     this.scoreManager = scoreManager;
+    this.gameFinishHook = gameFinishHook;
     this.clearBoard();
   }
 
@@ -81,6 +90,9 @@ class TileManager {
     this.tileGrid[tile2Position - 1] = null;
 
     this.scoreManager.addScore(newNum);
+    popSoundEffect.play();
+
+    return newNum;
   }
 
 
@@ -114,7 +126,12 @@ class TileManager {
       if (nextTile.getAttribute("num") === tileElement.getAttribute("num")) {
         // Merge tile
         position = null;
-        this.mergeTiles(nextTile, tileElement);
+
+        const mergeResult = this.mergeTiles(nextTile, tileElement);
+        if (mergeResult === WINNING_TILE) {
+          this.gameFinishHook();
+        }
+
       } else {
         // Shift tile to max pos
         position = nextTilePosition - shift;
@@ -177,9 +194,11 @@ class TileManager {
   }
 
   gameOver() {
+    gameOverSoundEffect.play();
     setTimeout(() => {
-      document.querySelector(".game-over-overlay").classList.toggle("active");
-    }, 1500);
+      gameOverOverlayElement.classList.add("active");
+      gameWonOverlayElement.classList.remove("active");
+    }, 1000);
   }
 
   outOfMoves() {
@@ -263,6 +282,7 @@ class ScoreManager {
     this.currentScoreElement = document.querySelector(".current-score .value");
     this.bestScoreElement = document.querySelector(".best-score .value");
     this.gameOverOverlayScoreElement = document.querySelector(".game-over-overlay .score .value");
+    this.gameWonOverlayScoreElement = document.querySelector(".game-won-overlay .score .value");
   }
 
   initBestScore() {
@@ -273,6 +293,7 @@ class ScoreManager {
     this.currentScore = score;
     this.currentScoreElement.innerText = score;
     this.gameOverOverlayScoreElement.innerText = score;
+    this.gameWonOverlayScoreElement.innerText = score;
 
     if (score > this.bestScore) {
       this.bestScore = score;
@@ -297,7 +318,9 @@ class GameManager {
   constructor() {
     this.gameGrid = new GameGrid();
     this.scoreManager = new ScoreManager();
-    this.tileManager = new TileManager(this.scoreManager);
+
+    this.winningTileCount = 0;
+    this.tileManager = new TileManager(this.scoreManager, () => this.gameWon());
 
     this.eventsAreSetup = false;
 
@@ -324,8 +347,10 @@ class GameManager {
       }
     };
 
+    this.continueControls = Array.from(document.querySelectorAll("[control='continue']"));
     this.resetControls = Array.from(document.querySelectorAll("[control='reset'"));
     this.onResetControlClick = () => this.resetGame();
+    this.onContinueControlClick = () => gameWonOverlayElement.classList.remove("active");
   }
 
   setupEvents() {
@@ -339,6 +364,10 @@ class GameManager {
     this.resetControls.forEach(control => {
       control.addEventListener("click", this.onResetControlClick);
     });
+
+    this.continueControls.forEach(control => {
+      control.addEventListener("click", this.onContinueControlClick);
+    });
   }
 
   createGame() {
@@ -349,9 +378,20 @@ class GameManager {
   }
 
   resetGame() {
+    this.winningTileCount = 0;
     this.scoreManager.updateScore(0);
     this.createGame();
-    document.querySelector(".game-over-overlay").classList.remove("active");
+    gameOverOverlayElement.classList.remove("active");
+    gameWonOverlayElement.classList.remove("active");
+  }
+
+  gameWon() {
+    this.winningTileCount += 1;
+
+    if (this.winningTileCount === 1) {
+      gameWonSoundEffect.play();
+      gameWonOverlayElement.classList.add("active");
+    }
   }
 }
 

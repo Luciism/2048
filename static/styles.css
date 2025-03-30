@@ -28,7 +28,7 @@ body {
     background-color: #444444;
 
 
-    .game-over-overlay {
+    & .game-overlay {
       opacity: 0;
       visibility: hidden;
       pointer-events: none;
@@ -42,7 +42,6 @@ body {
 
       position: absolute;
       inset: -14px;
-      background-color: rgba(75, 0, 0, 0.3);
       border-radius: 18px;
 
       display: flex;
@@ -52,7 +51,7 @@ body {
       backdrop-filter: blur(4px);
       -webkit-backdrop-filter: blur(4px);
     
-      & .game-over {
+      & .overlay-title {
         color: white;
         font-size: 26px;
         margin: 0;
@@ -62,10 +61,23 @@ body {
         color: white;
       }
 
+      & .buttons {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+      }
+
       & button {
         padding: 8px 16px;
         font-size: 20px;
       }
+    }
+
+    & .game-over-overlay {
+      background-color: rgba(75, 0, 0, 0.3);
+    }
+    & .game-won-overlay {
+      background-color: rgba(0, 75, 0, 0.3);
     }
   }
 
@@ -246,37 +258,37 @@ body {
     }
   
     &[num="2"] {
-      background-color: #4285f4;
+      background-color: hsl(217.42 100% 80%);
     }
     &[num="4"] {
-      background-color: #ea4335;
+      background-color: hsl(4.64 100% 80%);
     }
     &[num="8"] {
-      background-color: #fbbc05;
+      background-color: hsl(44.63 100% 80%);
     }
     &[num="16"] {
-      background-color: #34a853;
+      background-color: hsl(136.03 100% 80%);
     }
     &[num="32"] {
-      background-color: #e84e9b;
+      background-color: hsl(330 100% 80%);
     }
     &[num="64"] {
-      background-color: #27a28b;
+      background-color: hsl(168.78 100% 80%);
     }
     &[num="128"] {
-      background-color: #f67c5f;
+      background-color: hsl(11.52 100% 80%);
     }
     &[num="256"] {
-      background-color: #2b5bad;
+      background-color: hsl(217.85 100% 80%);
     }
     &[num="512"] {
-      background-color: #edc850;
+      background-color: hsl(45.86 100% 80%);
     }
     &[num="1024"] {
-      background-color: #b79473;
+      background-color: hsl(29.12 100% 80%);
     }
     &[num="2048"] {
-      background-color: #976f43;
+      background-color: hsl(31.43 100% 80%);
     }
   }
 
