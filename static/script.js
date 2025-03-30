@@ -324,28 +324,32 @@ class GameManager {
 
     this.eventsAreSetup = false;
 
+    const movementHandler = (e, shiftFn) => {
+      shiftFn();
+      e.preventDefault();
+    }
+
+    const shift = {
+      u: () => this.tileManager.shift(pos => this.tileManager.shiftTileUp(pos)),
+      d: () => this.tileManager.shift(pos => this.tileManager.shiftTileDown(pos), true),
+      l: () => this.tileManager.shift(pos => this.tileManager.shiftTileLeft(pos)),
+      r: () => this.tileManager.shift(pos => this.tileManager.shiftTileRight(pos), true),
+    }
+
     this.onKeypress = (e) => {
-      if (e.key == "ArrowUp") {
-        this.tileManager.shift(pos => this.tileManager.shiftTileUp(pos));
-        e.preventDefault();
-        return;
-      }
-      if (e.key == "ArrowLeft") {
-        this.tileManager.shift(pos => this.tileManager.shiftTileLeft(pos));
-        e.preventDefault();
-        return;
-      }
-      if (e.key == "ArrowDown") {
-        this.tileManager.shift(pos => this.tileManager.shiftTileDown(pos), true);
-        e.preventDefault();
-        return;
-      }
-      if (e.key == "ArrowRight") {
-        this.tileManager.shift(pos => this.tileManager.shiftTileRight(pos), true);
-        e.preventDefault();
-        return;
-      }
+      if (e.key == "ArrowDown")  return movementHandler(e, shift.d);
+      if (e.key == "ArrowUp")    return movementHandler(e, shift.u);
+      if (e.key == "ArrowLeft")  return movementHandler(e, shift.l);
+      if (e.key == "ArrowRight") return movementHandler(e, shift.r);
     };
+
+    this.onSwipe = (e) => {
+      const direction = e.detail.primaryDirection;
+      if (direction == "up")    return movementHandler(e, shift.u);
+      if (direction == "down")  return movementHandler(e, shift.d);
+      if (direction == "left")  return movementHandler(e, shift.l);
+      if (direction == "right") return movementHandler(e, shift.r)
+    }
 
     this.continueControls = Array.from(document.querySelectorAll("[control='continue']"));
     this.resetControls = Array.from(document.querySelectorAll("[control='reset'"));
@@ -360,6 +364,7 @@ class GameManager {
     this.eventsAreSetup = true;
 
     window.addEventListener("keydown", this.onKeypress);
+    window.addEventListener("swipe", this.onSwipe);
 
     this.resetControls.forEach(control => {
       control.addEventListener("click", this.onResetControlClick);
