@@ -19,7 +19,7 @@ jobs:
       # Step 2: Create a temporary folder and copy necessary files
       - name: Copy index.html and static folder
         run: |
-          mkdir output
+          mkdir ../output
           cp index.html ../output/
           cp -r static/ ../output/
 
