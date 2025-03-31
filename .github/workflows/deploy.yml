@@ -34,7 +34,8 @@ jobs:
           git fetch origin gh-pages
           git checkout gh-pages || git checkout --orphan gh-pages
           # rm -rf *
-          rm -rf ./* ./.??*
+          # rm -rf ./* ./.??*
+          find . -mindepth 1 -not -name ".git" -exec rm -rf {} +
           cp -r ../output/* .
           git add .
           git commit -m "Update gh-pages with latest changes from main" || echo "Nothing to commit"
