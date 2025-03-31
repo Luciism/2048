@@ -30,13 +30,13 @@ function checkDirection() {
 }
 
 document.addEventListener('touchstart', e => {
-  e.preventDefault();
+  // e.preventDefault();
   touchStartX = e.changedTouches[0].screenX;
   touchStartY = e.changedTouches[0].screenY;
 });
 
 document.addEventListener('touchend', e => {
-  e.preventDefault();
+  // e.preventDefault();
   touchEndX = e.changedTouches[0].screenX;
   touchEndY = e.changedTouches[0].screenY;
   checkDirection();
