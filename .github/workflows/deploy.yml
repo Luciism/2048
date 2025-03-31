@@ -1,5 +1,3 @@
-# Suggested code may be subject to a license. Learn more: ~LicenseLog:1935519394.
-yaml
 name: Update gh-pages branch
 
 on:
