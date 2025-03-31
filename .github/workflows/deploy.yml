@@ -34,6 +34,4 @@ jobs:
           cp -r ../output/* .
           git add .
           git commit -m "Update gh-pages with latest changes from main" || echo "Nothing to commit"
-          git remote -v
-          git remote add origin git@github.com:Luciism/2048.git
           git push origin gh-pages
