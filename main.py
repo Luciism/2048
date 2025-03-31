@@ -1,12 +1,12 @@
 import os
 
-from flask import Flask, render_template
+from flask import Flask, render_template, send_file
 
 app = Flask(__name__)
 
 @app.route("/")
 def index():
-    return render_template('index.html')
+    return send_file('index.html')
 
 def main():
     app.run(port=int(os.environ.get('PORT', 80)))
