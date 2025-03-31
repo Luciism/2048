@@ -20,8 +20,8 @@ jobs:
       - name: Copy index.html and static folder
         run: |
           mkdir output
-          cp index.html output/
-          cp -r static/ output/
+          cp index.html ../output/
+          cp -r static/ ../output/
 
       # Step 3: Switch to gh-pages branch and prepare for deployment
       - name: Deploy to gh-pages
@@ -30,8 +30,8 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git fetch origin gh-pages
           git checkout gh-pages || git checkout --orphan gh-pages
-          rm -rf !(output) # Remove everything except the output directory
-          cp -r output/* .
+          rm -rf *
+          cp -r ../output/* .
           git add .
           git commit -m "Update gh-pages with latest changes from main" || echo "Nothing to commit"
           git push origin gh-pages
