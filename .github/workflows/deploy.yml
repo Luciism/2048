@@ -25,7 +25,7 @@ jobs:
           mkdir ../output
           cp index.html ../output/
           cp -r static/ ../output/
-          cp -r .git/ ../output/
+          cp -r CNAME ../output/
 
       # Step 3: Switch to gh-pages branch and prepare for deployment
       - name: Deploy to gh-pages
