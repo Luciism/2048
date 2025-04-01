@@ -1,7 +1,11 @@
-# Flask Web App Starter
+# 2048 Game
 
-A Flask starter template as per [these docs](https://flask.palletsprojects.com/en/3.0.x/quickstart/#a-minimal-application).
+![image](preview.png)
 
-## Getting Started
+A basic 2048 game made with HTML, CSS and JavaScript
 
-Previews should run automatically when starting a workspace.
+
+### General Overview
+
+The tiles are styled and positioned using CSS based on classes and custom attributes. An ordered array of 16 tile elements is kept in sync with the DOM.
+
