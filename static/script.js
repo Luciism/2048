@@ -422,13 +422,13 @@ class SaveManager {
       this.gameManager.loadGame(saveData.gameState);
     }
 
-    saveElement.querySelector("[control='delete-save']").onclick = () => {
-      this.deleteSave(saveData.id);
-      saveElement.remove();
-      if (gameSavesListElement.childElementCount === 0) {
-        this.addPlaceholderElement()
-      }
-    }
+    // saveElement.querySelector("[control='delete-save']").onclick = () => {
+    //   this.deleteSave(saveData.id);
+    //   saveElement.remove();
+    //   if (gameSavesListElement.childElementCount === 0) {
+    //     this.addPlaceholderElement()
+    //   }
+    // }
 
     gameSavesListElement.appendChild(saveElement);
     const placeholderElement = gameSavesListElement.querySelector(".save-placeholder");
