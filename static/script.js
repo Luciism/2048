@@ -411,12 +411,11 @@ class SaveManager {
         <span class="detail-save-name">${saveData.name}</span>
         <span class="detail-save-score">Score: ${saveData.gameState.score.toLocaleString()}</span>
       </span>
+      <span class="save-actions" save-id="${saveData.id}">
+        <button control="load-save">Load</button>
+        <!-- button class="red" control="delete-save">Delete</button -->
+      </span>
     `;
-    //   <span class="save-actions" save-id="${saveData.id}">
-    //     <button control="load-save">Load</button>
-    //     <button class="red" control="delete-save">Delete</button>
-    //   </span>
-    // `;
 
     saveElement.querySelector("[control='load-save']").onclick = () => {
       this.gameManager.loadGame(saveData.gameState);
