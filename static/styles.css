@@ -379,7 +379,9 @@ button {
   &[num="2048"] {
     background-color: hsl(31.43 100% 80%);
   }
-
+  &[num="4096"] {
+    background-color: hsl(236.5 100% 80%);
+  }
   &[num="128"],
   &[num="256"],
   &[num="512"] {
@@ -387,8 +389,10 @@ button {
   }
 
   &[num="1024"],
-  &[num="2048"] {
+  &[num="2048"],
+  &[num="4096"] {
     font-size: calc(var(--scale) * 36px);
+    box-shadow: 0 0 10px -2px gold;
   }
 }
 
