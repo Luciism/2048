@@ -10,6 +10,10 @@ function animateElementPop(element) {
   element.classList.add("pop-animated-element");
 }
 
+const saveNameInputElement = document.getElementById("save-name-input");
+const createSaveBtnElement = document.querySelector(".save-controls [control='new-save']");
+const gameSavesListElement = document.getElementById("saves-list");
+
 const gameOverOverlayElement = document.querySelector(".game-over-overlay");
 const gameWonOverlayElement = document.querySelector(".game-won-overlay");
 
@@ -294,18 +298,18 @@ class ScoreManager {
   }
 
   initBestScore() {
-    this.bestScoreElement.innerText = this.bestScore;
+    this.bestScoreElement.innerText = this.bestScore.toLocaleString();
   }
 
   updateScore(score) {
     this.currentScore = score;
-    this.currentScoreElement.innerText = score;
-    this.gameOverOverlayScoreElement.innerText = score;
-    this.gameWonOverlayScoreElement.innerText = score;
+    this.currentScoreElement.innerText = score.toLocaleString();
+    this.gameOverOverlayScoreElement.innerText = score.toLocaleString();
+    this.gameWonOverlayScoreElement.innerText = score.toLocaleString();
 
     if (score > this.bestScore) {
       this.bestScore = score;
-      this.bestScoreElement.innerText = score;
+      this.bestScoreElement.innerText = score.toLocaleString();
 
       localStorage.setItem("bestScore", score)
     }
@@ -321,6 +325,117 @@ class ScoreManager {
 }
 
 new ScoreManager().initBestScore();
+
+class SaveManager {
+  constructor(gameManager) {
+    this.gameManager = gameManager;
+    createSaveBtnElement.onclick = () => this.onCreateSaveBtnClick();
+  }
+
+  onCreateSaveBtnClick() {
+    let saveName = saveNameInputElement.value;
+    if (saveName.length == 0) {
+      saveNameInputElement.focus();
+      return;
+    }
+
+    const gameState = localStorage.getItem("gameState");
+    if (gameState) {
+      this.createSave(saveName, JSON.parse(gameState));
+    }
+    saveNameInputElement.value = "";
+  }
+
+  loadSavesFromLocalStorage() {
+    const saves = localStorage.getItem("gameSaves");
+    
+    if (saves) {
+      try {
+        return JSON.parse(saves);
+      } catch {
+        localStorage.removeItem("gameSaves");
+      }
+    }
+    return [];
+  }
+
+  setGameSaves(gameSaves) {
+    localStorage.setItem("gameSaves", JSON.stringify(gameSaves));
+  }
+
+  createSave(saveName, gameState) {
+    const saveData = {
+      name: saveName,
+      id: new Date().toISOString(),
+      gameState: gameState
+    };
+
+    const existingSaves = this.loadSavesFromLocalStorage();
+    existingSaves.push(saveData);
+    this.setGameSaves(existingSaves);
+
+    this.addSaveElement(saveData); 
+  }
+
+  deleteSave(saveID) {
+    const existingSaves = this.loadSavesFromLocalStorage();
+    const newSaves = existingSaves.filter(save => save.id !== saveID);
+    this.setGameSaves(newSaves);
+  }
+
+  updateSavesList() {
+    const existingSaves = this.loadSavesFromLocalStorage();
+    gameSavesListElement.innerHTML = "";
+    existingSaves.forEach(save => {
+      this.addSaveElement(save);
+    });
+
+    if (gameSavesListElement.childElementCount === 0) {
+      this.addPlaceholderElement();
+    }
+  }
+
+  addPlaceholderElement() {
+    const placeholder = document.createElement("li");
+    placeholder.classList = "save-placeholder";
+    placeholder.innerText = "No saves have been created";
+    gameSavesListElement.appendChild(placeholder);
+  }
+
+  addSaveElement(saveData) {
+    const saveElement = document.createElement("li");
+    saveElement.className = "save";
+
+    saveElement.innerHTML = `
+      <span class="save-info">
+        <span class="detail-save-name">${saveData.name}</span>
+        <span class="detail-save-score">Score: ${saveData.gameState.score.toLocaleString()}</span>
+      </span>
+      <span class="save-actions" save-id="${saveData.id}">
+        <button control="load-save">Load</button>
+        <button class="red" control="delete-save">Delete</button>
+      </span>
+    `;
+
+    saveElement.querySelector("[control='load-save']").onclick = () => {
+      this.gameManager.loadGame(saveData.gameState);
+    }
+
+    saveElement.querySelector("[control='delete-save']").onclick = () => {
+      this.deleteSave(saveData.id);
+      saveElement.remove();
+      if (gameSavesListElement.childElementCount === 0) {
+        this.addPlaceholderElement()
+      }
+    }
+
+    gameSavesListElement.appendChild(saveElement);
+    const placeholderElement = gameSavesListElement.querySelector(".save-placeholder");
+    if (placeholderElement) {
+      placeholderElement.remove();
+    }
+  }
+}
 
 class GameManager {
   constructor() {
@@ -419,6 +534,8 @@ class GameManager {
         this.tileManager.addTile(tileGrid[i], i + 1);
       }
     }
+    gameOverOverlayElement.classList.remove("active");
+    gameWonOverlayElement.classList.remove("active");
 
     this.setupEvents();
   }
@@ -429,15 +546,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let gameState = localStorage.getItem("gameState");
 
-  if (gameState) {
-    try {
-      gameState = JSON.parse(gameState);
-      gameManager.loadGame(gameState);
-      return;
-    } catch {
-      localStorage.removeItem("gameState");
+  (() => {
+    if (gameState) {
+      try {
+        gameState = JSON.parse(gameState);
+        gameManager.loadGame(gameState);
+        return;
+      } catch {
+        localStorage.removeItem("gameState");
+      }
     }
-  }
 
-  gameManager.createGame();
+    gameManager.createGame();
+  })()
+
+  const saveManager = new SaveManager(gameManager);
+  saveManager.updateSavesList();
 });
