@@ -64,6 +64,27 @@
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12S6.477 2 12 2v2a8 8 0 1 0 5.135 1.865L15 8V2h6l-2.447 2.447A9.98 9.98 0 0 1 22 12"/></svg>
         </button>
       </div>
+
+      <div class="save-menu">
+        <div class="save-controls">
+          <input type="text" placeholder="Save Name" class="save-name-input" id="save-name-input" />
+          <button control="new-save" class="save-create">Save</button>
+        </div>
+        <hr />
+        <ul class="saves-list" id="saves-list">
+          <!-- <li class="save-placeholder">No saves have been created</li> -->
+          <li class="save">
+            <span class="save-info">
+              <span class="detail-save-name">Save Name</span>
+              <span class="detail-save-score">Score: 12,634</span>
+            </span>
+            <span class="save-actions" save-id="abc123">
+              <button control="load-save">Load</button>
+              <button class="red" control="delete-save">Delete</button>
+            </span>
+         </li>
+        </ul>
+      </div>
     </main>
   </body>
 </html>
