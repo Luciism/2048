@@ -17,6 +17,11 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  margin: 0;
+}
+
+main {
+  width: calc(var(--tile-size) * 4 + var(--gap-size) * 3);
 }
 
 #game-grid {
@@ -178,6 +183,7 @@ button {
   display: flex;
   flex-direction: column;
   gap: 14px;
+  flex-wrap: wrap;
 
   & hr {
     width: 100%;
@@ -199,6 +205,13 @@ button {
       border-radius: 4px;
       background-color: #444444;
       border: 1px solid #555555;
+      max-width: -moz-available;
+      width: 100%;
+    }
+
+    & button.save-create {
+      flex-grow: 1;
+      min-width: 60px;
     }
   }
 
