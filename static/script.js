@@ -413,7 +413,10 @@ class SaveManager {
       </span>
       <span class="save-actions" save-id="${saveData.id}">
         <button control="load-save">Load</button>
-        <!-- button class="red" control="delete-save">Delete</button -->
+        <button class="red" control="delete-save" hold-for="3">
+          <span class="content">Delete</span>
+          <span class="countdown"></span>
+        </button>
       </span>
     `;
 
@@ -421,13 +424,13 @@ class SaveManager {
       this.gameManager.loadGame(saveData.gameState);
     }
 
-    // saveElement.querySelector("[control='delete-save']").onclick = () => {
-    //   this.deleteSave(saveData.id);
-    //   saveElement.remove();
-    //   if (gameSavesListElement.childElementCount === 0) {
-    //     this.addPlaceholderElement()
-    //   }
-    // }
+    saveElement.querySelector("[control='delete-save']").onclick = () => {
+      this.deleteSave(saveData.id);
+      saveElement.remove();
+      if (gameSavesListElement.childElementCount === 0) {
+        this.addPlaceholderElement()
+      }
+    }
 
     gameSavesListElement.appendChild(saveElement);
     const placeholderElement = gameSavesListElement.querySelector(".save-placeholder");
