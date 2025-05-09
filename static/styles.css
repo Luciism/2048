@@ -88,6 +88,10 @@ body {
 }
 
 button {
+  --animation-duration: 3s;
+
+  position: relative;
+  /* height: 40px; */
   border: none;
   outline: none;
   padding: calc(var(--scale) * 10px);
@@ -110,11 +114,31 @@ button {
   }
 
   .countdown {
-    margin-left: 12px;
-    font-size: calc(var(--scale) * 18px);
+    display: none;
+    font-size: calc(var(--scale) * 40px);
     font-weight: 500;
   }
+
+  &.hold-progress-animation {
+    &::after {
+      content: "";
+      position: absolute;
+      /* inset: 0; */
+      height: 100%;
+      border-radius: 4px;
+      top: 0;
+      left: 0;
+      background-color: rgba(255, 255, 255, 0.3);
+      animation: background-bar-animation var(--animation-duration) linear 0s 1 forwards;
+    }
+  }
 }
+
+@keyframes background-bar-animation {
+  0% {width: 0}
+  100% {width: 100%}
+}
+
 #game-tiles {
   position: absolute;
   inset: 0;

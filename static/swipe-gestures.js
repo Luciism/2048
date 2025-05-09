@@ -30,7 +30,6 @@ function checkDirection() {
     const event = new CustomEvent("swipe", {
         detail: { directionX, directionY, primaryAxis, primaryDirection } });
 
-    console.log(event);
     window.dispatchEvent(event);
 }
 
@@ -43,7 +42,6 @@ document.addEventListener('touchstart', e => {
 
 document.addEventListener('touchend', e => {
   if (new Date().getTime() - touchStartTime > 500) return;
-  // console.log(e)
   // e.preventDefault();
   touchEndX = e.changedTouches[0].screenX;
   touchEndY = e.changedTouches[0].screenY;
