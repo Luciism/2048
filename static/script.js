@@ -424,7 +424,9 @@ class SaveManager {
       this.gameManager.loadGame(saveData.gameState);
     }
 
-    saveElement.querySelector("[control='delete-save']").onclick = () => {
+    const deleteBtn = saveElement.querySelector("[control='delete-save']");
+    setupHoldBtn(deleteBtn);
+    deleteBtn.onclick = () => {
       this.deleteSave(saveData.id);
       saveElement.remove();
       if (gameSavesListElement.childElementCount === 0) {
@@ -544,8 +546,9 @@ class GameManager {
   }
 }
 
+let gameManager;
 document.addEventListener("DOMContentLoaded", () => {
-  const gameManager = new GameManager();
+  gameManager = new GameManager();
 
   let gameState = localStorage.getItem("gameState");
 

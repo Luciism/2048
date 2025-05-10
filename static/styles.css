@@ -425,6 +425,39 @@ button {
   &[num="4096"] {
     background-color: hsl(236.5 100% 80%);
   }
+  &[num="8192"] {
+    background-color: hsl(280.00 100% 80%);
+  }
+  &[num="16384"] {
+    background-color: hsl(250.00 100% 80%);
+  }
+  &[num="32768"] {
+    background-color: hsl(110.00 100% 80%);
+  }
+  &[num="65536"] {
+    background-color: hsl(45.00 100% 80%);
+  }
+  &[num="131072"] {
+    background-color: hsl(10.00 100% 80%);
+  }
+  &[num="262144"] {
+    background-color: hsl(232.00 100% 80%);
+  }
+  &[num="524288"] {
+    background-color: hsl(360.00 100% 80%);
+  }
+  &[num="1048576"] {
+    background-color: hsl(260.00 100% 80%);
+  }
+  &[num="2097152"] {
+    background-color: hsl(225.00 100% 80%);
+  }
+  &[num="4194304"] {
+    background-color: hsl(135.00 100% 80%);
+  }
+  &[num="8388608"] {
+    background-color: hsl(30.00 100% 80%);
+  }
   &[num="128"],
   &[num="256"],
   &[num="512"] {
@@ -433,9 +466,29 @@ button {
 
   &[num="1024"],
   &[num="2048"],
-  &[num="4096"] {
+  &[num="4096"],
+  &[num="8192"] {
     font-size: calc(var(--scale) * 36px);
     box-shadow: 0 0 10px -2px gold;
+  }
+  &[num="16384"],
+  &[num="32768"],
+  &[num="65536"] {
+    font-size: calc(var(--scale) * 30px);
+    box-shadow: 0 0 10px -2px whitesmoke;
+  }
+  &[num="131072"],
+  &[num="262144"],
+  &[num="524288"] {
+    font-size: calc(var(--scale) * 26px);
+    box-shadow: 0 0 10px -2px whitesmoke;
+  }
+  &[num="1048576"],
+  &[num="2097152"],
+  &[num="4194304"],
+  &[num="8388608"] {
+    font-size: calc(var(--scale) * 20px);
+    box-shadow: 0 0 10px -2px whitesmoke;
   }
 }
 
