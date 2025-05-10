@@ -553,6 +553,7 @@ class GameManager {
   }
 
   createGame() {
+    this.tileManager.currentUnlockedTileNumber = 2;
     this.tileManager.clearBoard();
     this.tileManager.addRandomTile([2, 4]);
     this.tileManager.addRandomTile([2, 4]);
