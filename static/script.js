@@ -1,4 +1,9 @@
 const WINNING_TILE = 2048;
+const AVAILABLE_GAME_MODES = {
+  classic: 0,
+  increase: 1,
+};
+const GAME_MODE = AVAILABLE_GAME_MODES.increase;
 
 const popSoundEffect = new Audio("../static/media/ui-pop-sound.mp3");
 const gameOverSoundEffect = new Audio("../static/media/game-over-sound.mp3");
@@ -44,6 +49,8 @@ class TileManager {
     this.scoreManager = scoreManager;
     this.gameFinishHook = gameFinishHook;
     this.clearBoard();
+
+    this.currentUnlockedTileNumber = 2;
   }
 
   randomUnoccupiedPosition() {
@@ -53,6 +60,23 @@ class TileManager {
 
     const position = randomArrayElement(availableTiles) + 1;
     return position;
+  }
+
+  unlockedTileNumber(highestTileOnBoard) {
+    // For every second unlocked highest tile on the board unlocks a new tile.
+    // 2 -> 2
+    // 8 -> 4
+    // 32 -> 8
+    // 128 -> 16
+    const num = Math.sqrt(highestTileOnBoard * 2);
+    
+    // Ensure highest tile is not intermediate (4, 16, etc) (it will be a float if so).
+    if (num % 1 == 0) {
+      return num;
+    }
+
+    // Return the correct unlocked tile.
+    return Math.sqrt(highestTileOnBoard);
   }
 
   addTile(tileNumber, position) {
@@ -78,6 +102,16 @@ class TileManager {
     return null;  // No available positions
   }
 
+  removeTile(position) {
+    const tileElement = this.tileGrid[position - 1];
+    if (!tileElement) {
+      return;
+    }
+
+    tileElement.remove();
+    this.tileGrid[position - 1] = null;
+  }
+
   mergeTiles(tile1, tile2) {
     const oldNum = parseInt(tile1.textContent);
     const newNum = oldNum * 2;
@@ -89,7 +123,7 @@ class TileManager {
     tile2.textContent = newNum;
     tile2.setAttribute("position", tile1Position);
     tile1.remove();
-    animateElementPop(tile2);
+    // animateElementPop(tile2);
     this.tileGrid[tile1Position - 1] = tile2;
     this.tileGrid[tile2Position - 1] = null;
 
@@ -189,7 +223,22 @@ class TileManager {
 
     const gridAfter = this.flatTileGrid();
     if (JSON.stringify(gridBefore) !== JSON.stringify(gridAfter)) {
-      this.addRandomTile();
+      // Select tile to be added to board.
+      if (GAME_MODE === AVAILABLE_GAME_MODES.increase) {
+        const tileAddNumber = this.unlockedTileNumber(gridAfter.sort((a, b) => b - a)[0]);
+        if (tileAddNumber > this.currentUnlockedTileNumber) {
+          // Remove all tiles below current unlocked tile
+          console.log(gridAfter);
+          this.flatTileGrid()
+            .map((tile, i) => [tile, i])
+            .filter(([tile, pos]) => tile !== null && tile < tileAddNumber)
+            .forEach(([tile, pos]) => this.removeTile(pos + 1));
+          this.currentUnlockedTileNumber = tileAddNumber;
+        }
+        this.addRandomTile([tileAddNumber]);
+      } else {
+        this.addRandomTile([2]);
+      }
 
       if (this.outOfMoves()) {
         this.gameOver();
@@ -424,7 +473,9 @@ class SaveManager {
       this.gameManager.loadGame(saveData.gameState);
     }
 
-    saveElement.querySelector("[control='delete-save']").onclick = () => {
+    const deleteBtn = saveElement.querySelector("[control='delete-save']");
+    setupHoldBtn(deleteBtn);
+    deleteBtn.onclick = () => {
       this.deleteSave(saveData.id);
       saveElement.remove();
       if (gameSavesListElement.childElementCount === 0) {
@@ -502,6 +553,7 @@ class GameManager {
   }
 
   createGame() {
+    this.tileManager.currentUnlockedTileNumber = 2;
     this.tileManager.clearBoard();
     this.tileManager.addRandomTile([2, 4]);
     this.tileManager.addRandomTile([2, 4]);
@@ -544,8 +596,9 @@ class GameManager {
   }
 }
 
+let gameManager;
 document.addEventListener("DOMContentLoaded", () => {
-  const gameManager = new GameManager();
+  gameManager = new GameManager();
 
   let gameState = localStorage.getItem("gameState");
 
