@@ -3,7 +3,7 @@ const AVAILABLE_GAME_MODES = {
   classic: 0,
   increase: 1,
 };
-const GAME_MODE = AVAILABLE_GAME_MODES.increase;
+const GAME_MODE = AVAILABLE_GAME_MODES.classic;
 
 const popSoundEffect = new Audio("../static/media/ui-pop-sound.mp3");
 const gameOverSoundEffect = new Audio("../static/media/game-over-sound.mp3");
@@ -68,7 +68,8 @@ class TileManager {
     // 8 -> 4
     // 32 -> 8
     // 128 -> 16
-    const num = Math.sqrt(highestTileOnBoard * 2);
+    const MULTIPLIER = 1;
+    const num = Math.sqrt(highestTileOnBoard * 2) * MULTIPLIER;
     
     // Ensure highest tile is not intermediate (4, 16, etc) (it will be a float if so).
     if (num % 1 == 0) {
@@ -76,7 +77,7 @@ class TileManager {
     }
 
     // Return the correct unlocked tile.
-    return Math.sqrt(highestTileOnBoard);
+    return Math.sqrt(highestTileOnBoard) * MULTIPLIER;
   }
 
   addTile(tileNumber, position) {
