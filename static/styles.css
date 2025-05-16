@@ -388,7 +388,6 @@ button {
     top: calc((var(--tile-size) + var(--gap-size)) * 3);
     left: calc((var(--tile-size) + var(--gap-size)) * 3);
   }
-
   &[num="2"] {
     background-color: hsl(217.42 100% 80%);
   }
