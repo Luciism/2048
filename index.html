@@ -69,26 +69,30 @@
         </button>
       </div>
 
-      <div class="save-menu">
-        <div class="save-controls">
-          <input type="text" placeholder="Save Name" class="save-name-input" id="save-name-input" />
-          <button control="new-save" class="save-create">Save</button>
+      <details class="saves-dropdown" id="savesDropdownAccordion" open>
+        <summary>Collapse Saves</summary>
+
+        <div class="save-menu">
+          <div class="save-controls">
+            <input type="text" placeholder="Save Name" class="save-name-input" id="save-name-input" />
+            <button control="new-save" class="save-create">Save</button>
+          </div>
+          <hr />
+          <ul class="saves-list" id="saves-list">
+            <!-- <li class="save-placeholder">No saves have been created</li> -->
+            <li class="save">
+              <span class="save-info">
+                <span class="detail-save-name">Save Name</span>
+                <span class="detail-save-score">Score: 12,634</span>
+              </span>
+              <span class="save-actions" save-id="abc123">
+                <button control="load-save">Load</button>
+                <button class="red" control="delete-save">Delete</button>
+              </span>
+           </li>
+          </ul>  
         </div>
-        <hr />
-        <ul class="saves-list" id="saves-list">
-          <!-- <li class="save-placeholder">No saves have been created</li> -->
-          <li class="save">
-            <span class="save-info">
-              <span class="detail-save-name">Save Name</span>
-              <span class="detail-save-score">Score: 12,634</span>
-            </span>
-            <span class="save-actions" save-id="abc123">
-              <button control="load-save">Load</button>
-              <button class="red" control="delete-save">Delete</button>
-            </span>
-         </li>
-        </ul>
-      </div>
+      </details>
     </main>
   </body>
 </html>
