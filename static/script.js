@@ -15,6 +15,11 @@ function animateElementPop(element) {
   element.classList.add("pop-animated-element");
 }
 
+savesDropdownAccordion.ontoggle = (e) => {
+  const summary = savesDropdownAccordion.querySelector("summary");
+  summary.innerText = savesDropdownAccordion.open ? "Collapse Saves" : "Expand Saves";
+}
+
 const saveNameInputElement = document.getElementById("save-name-input");
 const createSaveBtnElement = document.querySelector(".save-controls [control='new-save']");
 const gameSavesListElement = document.getElementById("saves-list");
