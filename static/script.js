@@ -3,7 +3,7 @@ const AVAILABLE_GAME_MODES = {
   classic: 0,
   increase: 1,
 };
-const GAME_MODE = AVAILABLE_GAME_MODES.classic;
+let GAME_MODE = AVAILABLE_GAME_MODES.classic;
 
 const popSoundEffect = new Audio("../static/media/ui-pop-sound.mp3");
 const gameOverSoundEffect = new Audio("../static/media/game-over-sound.mp3");
@@ -15,10 +15,45 @@ function animateElementPop(element) {
   element.classList.add("pop-animated-element");
 }
 
+
+// Remember accordion states
+let accordionStates = localStorage.getItem("accordionStates");
+if (accordionStates) {
+  accordionStates = JSON.parse(accordionStates);
+  Object.entries(accordionStates).forEach(([key, value]) => {
+    const accordion = document.getElementById(key);
+    if (accordion) {
+      accordion.open = value;
+    }
+  });
+} else {
+  accordionStates = {};
+}
+
+function updateStoredAccordionState(accordion) {
+  accordionStates[accordion.id] = accordion.open;
+  localStorage.setItem("accordionStates", JSON.stringify(accordionStates));
+}
+
 savesDropdownAccordion.ontoggle = (e) => {
   const summary = savesDropdownAccordion.querySelector("summary");
   summary.innerText = savesDropdownAccordion.open ? "Collapse Saves" : "Expand Saves";
+
+  updateStoredAccordionState(savesDropdownAccordion);
 }
+
+settingsDropdownAccordion.ontoggle = (e) => {
+  const summary = settingsDropdownAccordion.querySelector("summary");
+  summary.innerText = settingsDropdownAccordion.open ? "Collapse Settings" : "Expand Settings";
+
+  updateStoredAccordionState(settingsDropdownAccordion);
+}
+
+gamemodeSelect.onchange = () => {
+  const selected = gamemodeSelect.value;
+  GAME_MODE = AVAILABLE_GAME_MODES[selected];
+}
+
 
 const saveNameInputElement = document.getElementById("save-name-input");
 const createSaveBtnElement = document.querySelector(".save-controls [control='new-save']");

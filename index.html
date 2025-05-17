@@ -69,28 +69,41 @@
         </button>
       </div>
 
-      <details class="saves-dropdown" id="savesDropdownAccordion" open>
-        <summary>Collapse Saves</summary>
+      <details class="saves-dropdown" id="savesDropdownAccordion">
+        <summary>Toggle Saves</summary>
 
-        <div class="save-menu">
-          <div class="save-controls">
-            <input type="text" placeholder="Save Name" class="save-name-input" id="save-name-input" />
-            <button control="new-save" class="save-create">Save</button>
+        <div class="details-content">
+          <div class="save-menu">
+            <div class="save-controls">
+              <input type="text" placeholder="Save Name" class="save-name-input" id="save-name-input" />
+              <button control="new-save" class="save-create">Save</button>
+            </div>
+            <hr />
+            <ul class="saves-list" id="saves-list">
+              <li class="save">
+                <span class="save-info">
+                  <span class="detail-save-name">Save Name</span>
+                  <span class="detail-save-score">Score: 12,634</span>
+                </span>
+                <span class="save-actions" save-id="abc123">
+                  <button control="load-save">Load</button>
+                  <button class="red" control="delete-save">Delete</button>
+                </span>
+             </li>
+            </ul>  
           </div>
-          <hr />
-          <ul class="saves-list" id="saves-list">
-            <!-- <li class="save-placeholder">No saves have been created</li> -->
-            <li class="save">
-              <span class="save-info">
-                <span class="detail-save-name">Save Name</span>
-                <span class="detail-save-score">Score: 12,634</span>
-              </span>
-              <span class="save-actions" save-id="abc123">
-                <button control="load-save">Load</button>
-                <button class="red" control="delete-save">Delete</button>
-              </span>
-           </li>
-          </ul>  
+        </div>
+      </details>
+
+      <details id="settingsDropdownAccordion">
+        <summary>Toggle Settings</summary>
+
+        <div class="details-content">
+          <label for="gamemodeSelect">Gamemode</label>
+          <select name="gamemode" id="gamemodeSelect">
+            <option value="classic">Classic</option>
+            <option value="increase">Increase</option>
+          </select>
         </div>
       </details>
     </main>

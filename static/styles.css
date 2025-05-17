@@ -178,13 +178,34 @@ button {
   }
 }
 
-.saves-dropdown {
-  margin-top: 50px;
-
+details {
   & summary {
     color: white;
     margin-bottom: 10px;
   }
+
+  & .details-content {
+    margin-bottom: 20px;
+  }
+}
+
+label {
+  font-size: 12px;
+  color: white;
+}
+
+input[type="text"],
+select {
+  padding: calc(var(--scale) * 10px) 10px;
+  color: white;
+  border-radius: 4px;
+  background-color: #444444;
+  border: 1px solid #555555;
+  width: 100%;
+}
+
+.saves-dropdown {
+  margin-top: 50px;
 }
 
 .save-menu {
@@ -207,14 +228,7 @@ button {
 
     & .save-name-input {
       flex-grow: 1;
-      /* height: 0;  */
-      padding: calc(var(--scale) * 10px) 10px;
-      color: white;
-      border-radius: 4px;
-      background-color: #444444;
-      border: 1px solid #555555;
       max-width: -moz-available;
-      width: 100%;
     }
 
     & button.save-create {
